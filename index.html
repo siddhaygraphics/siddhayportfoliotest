@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siddhay - Visual Architect</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --orange: #FF5733;
+            --orange-light: #FF8A65;
+            --orange-dark: #E64A19;
+            --gray: #f8f8f8;
+            --gray-dark: #333333;
+            --shadow: rgba(255, 87, 51, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--orange);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .custom-cursor.hover {
+            width: 40px;
+            height: 40px;
+            background: var(--orange);
+            opacity: 0.8;
+        }
+
+        /* Floating Brand Elements */
+        .brand-element {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .brand-element.s1 { top: 10%; left: 5%; font-size: 8rem; color: var(--orange); }
+        .brand-element.s2 { top: 30%; right: 10%; font-size: 12rem; color: var(--black); }
+        .brand-element.s3 { bottom: 20%; left: 15%; font-size: 6rem; color: var(--orange); }
+        .brand-element.s4 { top: 60%; right: 5%; font-size: 10rem; color: var(--black); }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(5deg); }
+            66% { transform: translateY(10px) rotate(-3deg); }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            padding: 1.5rem 3rem;
+            border-bottom: 3px solid var(--orange);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--white);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: 'S';
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: var(--orange);
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--orange);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--orange);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--black) 0%, var(--gray-dark) 50%, var(--black) 100%);
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, var(--orange) 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, var(--orange) 1px, transparent 1px),
+                linear-gradient(45deg, transparent 40%, rgba(255, 87, 51, 0.1) 50%, transparent 60%);
+            background-size: 100px 100px, 150px 150px, 200px 200px;
+            animation: backgroundMove 15s linear infinite;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-100px, -100px) rotate(360deg); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 1000px;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .hero-glitch {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero-title {
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            color: var(--white);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            animation: slideUp 1s ease-out;
+            position: relative;
+        }
+
+        .hero-title::before,
+        .hero-title::after {
+            content: 'SIDDHAY';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-title::before {
+            color: var(--orange);
+            animation: glitch-1 2s infinite;
+            z-index: -1;
+        }
+
+        .hero-title::after {
+            color: var(--white);
+            animation: glitch-2 2s infinite;
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes glitch-2 {
+            0% { transform: translate(0); }
+            20% { transform: translate(2px, -2px); }
+            40% { transform: translate(2px, 2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(-2px, 2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 600;
+            color: var(--orange);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: slideUp 1s ease-out 0.3s both;
+        }
+        
+        .hero-description {
+            font-size: 1.4rem;
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            color: rgba(255, 255, 255, 0.9);
+            animation: slideUp 1s ease-out 0.6s both;
+            line-height: 1.8;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin: 3rem 0;
+            animation: slideUp 1s ease-out 0.9s both;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: var(--white);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--orange);
+            font-family: 'JetBrains Mono', monospace;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideUp 1s ease-out 1.2s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: var(--orange);
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 3px solid var(--orange);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
+        .cta-button:hover {
+            background: var(--white);
+            color: var(--orange);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 3px solid var(--white);
+        }
+
+        .cta-secondary:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--white);
+            text-align: center;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 8rem 3rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 5px;
+            background: var(--orange);
+        }
+        
+        .section-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+        }
+
+        .section-title .highlight {
+            color: var(--orange);
+        }
+
+        .section-subtitle {
+            font-size: 1.5rem;
+            color: var(--gray-dark);
+            margin-bottom: 4rem;
+            font-weight: 400;
+        }
+
+        /* About Section */
+        .about {
+            background: var(--gray);
+            position: relative;
+        }
+
+        .about::before {
+            content: 'CREATIVE';
+            position: absolute;
+            top: 50%;
+            right: -5%;
+            font-size: 15rem;
+            color: rgba(255, 87, 51, 0.05);
+            font-weight: 900;
+            transform: rotate(90deg);
+            font-family: 'JetBrains Mono', monospace;
+            z-index: 1;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 6rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .about-image {
+            position: relative;
+        }
+
+        .image-frame {
+            position: relative;
+            overflow: hidden;
+            border: 5px solid var(--black);
+            box-shadow: 20px 20px 0 var(--orange);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(120%);
+            transition: all 0.5s ease;
+        }
+        
+        .about-image:hover img {
+            filter: grayscale(0%) contrast(100%);
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: 20px;
+            bottom: 20px;
+            border: 3px solid var(--orange);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .about-image:hover .image-overlay {
+            top: -10px;
+            left: -10px;
+            right: 10px;
+            bottom: 10px;
+        }
+        
+        .about-text h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--orange);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+        
+        .about-text p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            color: var(--gray-dark);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .skill-bar {
+            background: var(--white);
+            padding: 1.5rem;
+            border: 2px solid var(--black);
+            position: relative;
+        }
+
+        .skill-bar::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: var(--orange);
+            transition: width 2s ease;
+        }
+
+        .skill-bar.animate::before {
+            width: var(--skill-width);
+        }
+
+        .skill-bar[data-skill="95"]::before { --skill-width: 95%; }
+        .skill-bar[data-skill="90"]::before { --skill-width: 90%; }
+        .skill-bar[data-skill="85"]::before { --skill-width: 85%; }
+        .skill-bar[data-skill="92"]::before { --skill-width: 92%; }
+
+        .skill-name {
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .skill-level {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--orange);
+            font-weight: 600;
+        }
+
+        /* Portfolio Section */
+        .portfolio {
+            position: relative;
+        }
+
+        .portfolio::before {
+            content: 'WORK';
+            position: absolute;
+            top: 20%;
+            left: -10%;
+            font-size: 20rem;
+            color: rgba(0, 0, 0, 0.03);
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            z-index: 1;
+        }
+
+        .portfolio-filter {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid var(--black);
+            color: var(--black);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--orange);
+            color: var(--white);
+            border-color: var(--orange);
+            transform: translateY(-3px);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            border: 3px solid var(--black);
+            transition: all 0.5s ease;
+            background: var(--white);
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--orange), var(--orange-dark));
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+            z-index: 1;
+        }
+
+        .portfolio-item:hover::before {
+            transform: translateX(0);
+        }
+        
+        .portfolio-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+        
+        .portfolio-item:hover img {
+            transform: scale(1.1);
+            filter: brightness(0.7);
+        }
+        
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 3;
+        }
+        
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+        }
+        
+        .portfolio-overlay h4 {
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .portfolio-overlay p {
+            color: var(--orange);
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        .portfolio-overlay .view-btn {
+            padding: 0.8rem 2rem;
+            background: var(--orange);
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: 2px solid var(--orange);
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-overlay .view-btn:hover {
+            background: var(--white);
+            color: var(--orange);
+        }
+
+        /* Services Section */
+        .services {
+            background: var(--black);
+            color: var(--white);
+            position: relative;
+        }
+
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 5px;
+            background: var(--orange);
+        }
+
+        .services::after {
+            content: 'SERVICES';
+            position: absolute;
+            bottom: 10%;
+            right: -5%;
+            font-size: 12rem;
+            color: rgba(255, 87, 51, 0.1);
+            font-weight: 900;
+            transform: rotate(-90deg);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .services .section-title {
+            color: var(--white);
+        }
+
+        .services .section-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .service-card {
+            background: var(--white);
+            color: var(--black);
+            padding: 4rem 3rem;
+            border: 3px solid var(--orange);
+            position: relative;
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--orange);
+            transition: left 0.5s ease;
+            z-index: 1;
+        }
+
+        .service-card:hover::before {
+            left: 0;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 60px rgba(255, 87, 51, 0.4);
+        }
+
+        .service-card:hover * {
+            color: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .service-icon {
+            font-size: 4rem;
+            color: var(--orange);
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+        
+        .service-card h4 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .service-card p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .service-number {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 6rem;
+            font-weight: 900;
+            color: rgba(255, 87, 51, 0.1);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: var(--gray);
+            position: relative;
+        }
+
+        .contact::before {
+            content: 'CONNECT';
+            position: absolute;
+            top: 30%;
+            left: -8%;
+            font-size: 18rem;
+            color: rgba(0, 0, 0, 0.03);
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            z-index: 1;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: start;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .contact-info h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--orange);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+        
+        .contact-info p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            color: var(--gray-dark);
+        }
+        
+        .contact-details {
+            list-style: none;
+        }
+        
+        .contact-details li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .contact-details i {
+            color: var(--orange);
+            margin-right: 1.5rem;
+            width: 30px;
+            font-size: 1.5rem;
+        }
+
+        .social-preview {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .social-preview a {
+            width: 60px;
+            height: 60px;
+            background: var(--black);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            border: 3px solid var(--black);
+        }
+
+        .social-preview a:hover {
+            background: var(--orange);
+            border-color: var(--orange);
+            transform: translateY(-5px);
+        }
+        
+        .contact-form {
+            background: var(--white);
+            padding: 4rem;
+            border: 3px solid var(--black);
+            box-shadow: 15px 15px 0 var(--orange);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--black);
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .form-group {
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1.5rem 0;
+            border: none;
+            border-bottom: 3px solid var(--black);
+            background: transparent;
+            font-size: 1.1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-bottom-color: var(--orange);
+        }
+        
+        .form-group label {
+            position: absolute;
+            top: 1.5rem;
+            left: 0;
+            color: var(--gray-dark);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .form-group input:focus + label,
+        .form-group textarea:focus + label,
+        .form-group input:not(:placeholder-shown) + label,
+        .form-group textarea:not(:placeholder-shown) + label {
+            top: -0.5rem;
+            font-size: 0.9rem;
+            color: var(--orange);
+            font-weight: 600;
+        }
+        
+        .submit-button {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            background: var(--orange);
+            color: var(--white);
+            border: 3px solid var(--orange);
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-button:hover::before {
+            left: 100%;
+        }
+        
+        .submit-button:hover {
+            background: var(--white);
+            color: var(--orange);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--black);
+            color: var(--white);
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+            border-top: 5px solid var(--orange);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-brand {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--orange);
+            margin-bottom: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .footer-tagline {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .social-links a {
+            width: 60px;
+            height: 60px;
+            background: var(--orange);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            border: 3px solid var(--orange);
+        }
+        
+        .social-links a:hover {
+            background: var(--white);
+            color: var(--orange);
+            transform: translateY(-5px) rotate(5deg);
+        }
+
+        .footer-copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            position: relative;
+            margin: 3% auto;
+            width: 95%;
+            max-width: 1000px;
+            background: var(--white);
+            border: 5px solid var(--black);
+            box-shadow: 20px 20px 0 var(--orange);
+            animation: modalSlide 0.5s ease-out;
+            overflow: hidden;
+        }
+        
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--orange);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            border: 3px solid var(--orange);
+        }
+        
+        .modal-close:hover {
+            background: var(--white);
+            color: var(--orange);
+            transform: rotate(90deg);
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            padding: 3rem;
+        }
+        
+        .modal h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--orange);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .modal-category {
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .modal p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--gray-dark);
+            margin-bottom: 2rem;
+        }
+
+        .modal-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-tag {
+            background: var(--black);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .brand-element { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .about-content,
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 4rem 1.5rem;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .portfolio-filter {
+                gap: 1rem;
+            }
+
+            .filter-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .contact-form {
+                padding: 2rem;
+            }
+
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+            }
+
+            .modal-info {
+                padding: 2rem;
+            }
+        }
+        
+        /* Advanced Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s ease;
+        }
+
+        .slide-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s ease;
+        }
+
+        .slide-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: var(--white);
+        }
+
+        .loading-logo {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--orange);
+            margin-bottom: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 4px;
+            background: var(--gray-dark);
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: var(--orange);
+            animation: loading 3s ease-in-out forwards;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--orange), var(--orange-dark));
+            z-index: 9999;
+            transition: width 0.1s ease;
+        }
+
+        /* Menu Toggle for Mobile */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--black);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo">SIDDHAY</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+
+    <!-- Floating Brand Elements -->
+    <div class="brand-element s1">S</div>
+    <div class="brand-element s2">D</div>
+    <div class="brand-element s3">H</div>
+    <div class="brand-element s4">Y</div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo">SIDDHAY</a>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about">About</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-glitch">
+                <h1 class="hero-title">SIDDHAY</h1>
+            </div>
+            <p class="hero-subtitle">Visual Architect</p>
+            <p class="hero-description">23-year-old graphic designer obsessed with turning ideas into bold, functional visuals that stand out and connect with audiences on a deeper level.</p>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3+</span>
+                    <span class="stat-label">Years</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">25+</span>
+                    <span class="stat-label">Clients</span>
+                </div>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="#portfolio" class="cta-button">View Work</a>
+                <a href="#contact" class="cta-button cta-secondary">Get In Touch</a>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+            <div>Scroll Down</div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section about fade-in">
+        <h2 class="section-title">About <span class="highlight">Me</span></h2>
+        <p class="section-subtitle">Passionate designer with a vision</p>
+        <div class="about-content">
+            <div class="about-image slide-left">
+                <div class="image-frame">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop&crop=face" alt="Siddhay">
+                    <div class="image-overlay"></div>
+                </div>
+            </div>
+            <div class="about-text slide-right">
+                <h3>Creative Mind</h3>
+                <p>I'm a 23-year-old graphic designer obsessed with turning ideas into bold, functional visuals. My work blends creativity with purpose, delivering designs that stand out and connect with audiences on a deeper level.</p>
+                <p>With expertise in branding, UI/UX design, and visual storytelling, I bring a fresh perspective to every project while maintaining the sophistication of seasoned design principles.</p>
+                <p>My approach combines modern minimalism with brutalist influences, creating work that's both aesthetically striking and functionally superior.</p>
+                
+                <div class="skills-grid">
+                    <div class="skill-bar" data-skill="95">
+                        <div class="skill-name">Graphic Design</div>
+                        <div class="skill-level">95%</div>
+                    </div>
+                    <div class="skill-bar" data-skill="90">
+                        <div class="skill-name">UI/UX Design</div>
+                        <div class="skill-level">90%</div>
+                    </div>
+                    <div class="skill-bar" data-skill="85">
+                        <div class="skill-name">Branding</div>
+                        <div class="skill-level">85%</div>
+                    </div>
+                    <div class="skill-bar" data-skill="92">
+                        <div class="skill-name">Illustration</div>
+                        <div class="skill-level">92%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="section portfolio fade-in">
+        <h2 class="section-title">My <span class="highlight">Work</span></h2>
+        <p class="section-subtitle">Crafted with passion and precision</p>
+        
+        <div class="portfolio-filter">
+            <button class="filter-btn active" data-filter="all">All Work</button>
+            <button class="filter-btn" data-filter="branding">Branding</button>
+            <button class="filter-btn" data-filter="web">Web Design</button>
+            <button class="filter-btn" data-filter="print">Print</button>
+            <button class="filter-btn" data-filter="ui">UI/UX</button>
+        </div>
+
+        <div class="portfolio-grid">
+            <div class="portfolio-item" data-category="branding" onclick="openModal('modal1')">
+                <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=500&h=400&fit=crop" alt="Brand Identity Project">
+                <div class="portfolio-overlay">
+                    <h4>Modern Brand</h4>
+                    <p>Branding • Logo Design</p>
+                    <a href="#" class="view-btn">View Project</a>
+                </div>
+            </div>
+            <div class="portfolio-item" data-category="web" onclick="openModal('modal2')">
+                <img src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=500&h=400&fit=crop" alt="Web Design Project">
+                <div class="portfolio-overlay">
+                    <h4>E-Commerce</h4>
+                    <p>Web Design • UI/UX</p>
+                    <a href="#" class="view-btn">View Project</a>
+                </div>
+            </div>
+            <div class="portfolio-item" data-category="print" onclick="openModal('modal3')">
+                <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&h=400&fit=crop" alt="Poster Design">
+                <div class="portfolio-overlay">
+                    <h4>Event Posters</h4>
+                    <p>Print Design • Typography</p>
+                    <a href="#" class="view-btn">View Project</a>
+                </div>
+            </div>
+            <div class="portfolio-item" data-category="ui" onclick="openModal('modal4')">
+                <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=500&h=400&fit=crop" alt="Mobile App Design">
+                <div class="portfolio-overlay">
+                    <h4>Mobile App</h4>
+                    <p>UI/UX • Mobile Design</p>
+                    <a href="#" class="view-btn">View Project</a>
+                </div>
+            </div>
+            <div class="portfolio-item" data-category="branding" onclick="openModal('modal5')">
+                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=500&h=400&fit=crop" alt="Packaging Design">
+                <div class="portfolio-overlay">
+                    <h4>Product Pack</h4>
+                    <p>Package Design • Branding</p>
+                    <a href="#" class="view-btn">View Project</a>
+                </div>
+            </div>
+            <div class="portfolio-item" data-category="print" onclick="openModal('modal6')">
+                <img src="https://images.unsplash.com/photo-1493421419110-74f4e85ba126?w=500&h=400&fit=crop" alt="Illustration Project">
+                <div class="portfolio-overlay">
+                    <h4>Digital Art</h4>
+                    <p>Illustration • Digital Art</p>
+                    <a href="#" class="view-btn">View Project</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section services fade-in">
+        <h2 class="section-title">My <span class="highlight">Services</span></h2>
+        <p class="section-subtitle">What I can do for you</p>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-number">01</div>
+                <div class="service-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h4>Branding</h4>
+                <p>Creating memorable brand identities with a modern edge that resonate with your target audience and stand the test of time. From logos to complete brand systems.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-number">02</div>
+                <div class="service-icon">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <h4>Web Design</h4>
+                <p>Designing responsive, user-friendly websites that combine aesthetic appeal with optimal functionality and performance. Modern layouts that convert.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-number">03</div>
+                <div class="service-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h4>UI/UX Design</h4>
+                <p>Crafting intuitive user interfaces and experiences that guide users seamlessly through digital products and services. User-centered design approach.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-number">04</div>
+                <div class="service-icon">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <h4>Illustration</h4>
+                <p>Creating custom illustrations and digital artwork that enhance brand storytelling and visual communication. From concept to final artwork.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section contact fade-in">
+        <h2 class="section-title">Let's <span class="highlight">Connect</span></h2>
+        <p class="section-subtitle">Ready to start your project?</p>
+        <div class="contact-content">
+            <div class="contact-info slide-left">
+                <h3>Get In Touch</h3>
+                <p>Ready to bring your vision to life? I'm always excited to work on new projects and collaborate with creative minds. Let's create something amazing together.</p>
+                <ul class="contact-details">
+                    <li><i class="fas fa-envelope"></i> hello@siddhay.com</li>
+                    <li><i class="fas fa-phone"></i> +91 98765 43210</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Mumbai, India</li>
+                </ul>
+                <div class="social-preview">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-behance"></i></a>
+                    <a href="#"><i class="fab fa-dribbble"></i></a>
+                </div>
+            </div>
+            <div class="contact-form slide-right">
+                <h3 class="form-title">Start Project</h3>
+                <form onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <input type="text" id="name" placeholder=" " required>
+                        <label for="name">Your Name</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder=" " required>
+                        <label for="email">Email Address</label>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" rows="5" placeholder=" " required></textarea>
+                        <label for="message">Project Details</label>
+                    </div>
+                    <button type="submit" class="submit-button">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">SIDDHAY</div>
+            <div class="footer-tagline">Visual Architect • Creative Designer • Digital Artist</div>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-behance"></i></a>
+                <a href="#"><i class="fab fa-dribbble"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2025 Siddhay. All rights reserved. Crafted with passion.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('modal1')">&times;</div>
+            <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=1000&h=400&fit=crop" alt="Brand Identity Project" class="modal-image">
+            <div class="modal-info">
+                <h3>Modern Brand Identity</h3>
+                <div class="modal-category">Branding • Logo Design</div>
+                <p>A comprehensive branding project for a tech startup, featuring clean logo design, brand guidelines, and marketing materials. The design emphasizes minimalism while maintaining strong visual impact through strategic use of typography and color psychology.</p>
+                <div class="modal-tags">
+                    <span class="modal-tag">Adobe Illustrator</span>
+                    <span class="modal-tag">Photoshop</span>
+                    <span class="modal-tag">Brand Guidelines</span>
+                    <span class="modal-tag">Logo Design</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('modal2')">&times;</div>
+            <img src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=1000&h=400&fit=crop" alt="Web Design" class="modal-image">
+            <div class="modal-info">
+                <h3>E-Commerce Platform</h3>
+                <div class="modal-category">Web Design • UI/UX</div>
+                <p>Complete UI/UX design for a fashion e-commerce platform. Focused on creating an intuitive shopping experience with clean product displays, streamlined checkout process, and mobile-first responsive design approach that increased conversions by 40%.</p>
+                <div class="modal-tags">
+                    <span class="modal-tag">Figma</span>
+                    <span class="modal-tag">HTML/CSS</span>
+                    <span class="modal-tag">Responsive Design</span>
+                    <span class="modal-tag">User Research</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('modal3')">&times;</div>
+            <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1000&h=400&fit=crop" alt="Poster Design" class="modal-image">
+            <div class="modal-info">
+                <h3>Event Poster Series</h3>
+                <div class="modal-category">Print Design • Typography</div>
+                <p>Dynamic poster series for a music festival, combining bold typography with geometric elements. Each poster maintains consistency while representing different music genres through color and visual treatment, creating a cohesive yet diverse campaign.</p>
+                <div class="modal-tags">
+                    <span class="modal-tag">InDesign</span>
+                    <span class="modal-tag">Typography</span>
+                    <span class="modal-tag">Print Design</span>
+                    <span class="modal-tag">Color Theory</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('modal4')">&times;</div>
+            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1000&h=400&fit=crop" alt="Mobile App" class="modal-image">
+            <div class="modal-info">
+                <h3>Mobile App Interface</h3>
+                <div class="modal-category">UI/UX • Mobile Design</div>
+                <p>User interface design for a productivity mobile app. Features intuitive navigation, clean information architecture, and modern visual elements that enhance user engagement and task completion rates while maintaining accessibility standards.</p>
+                <div class="modal-tags">
+                    <span class="modal-tag">Sketch</span>
+                    <span class="modal-tag">Prototyping</span>
+                    <span class="modal-tag">iOS Design</span>
+                    <span class="modal-tag">Material Design</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal5" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('modal5')">&times;</div>
+            <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1000&h=400&fit=crop" alt="Packaging" class="modal-image">
+            <div class="modal-info">
+                <h3>Product Packaging</h3>
+                <div class="modal-category">Package Design • Branding</div>
+                <p>Sustainable packaging design for an organic skincare brand. Incorporates eco-friendly materials with sophisticated design elements that communicate premium quality and environmental consciousness, resulting in 60% increase in shelf appeal.</p>
+                <div class="modal-tags">
+                    <span class="modal-tag">Package Design</span>
+                    <span class="modal-tag">Sustainability</span>
+                    <span class="modal-tag">Brand Identity</span>
+                    <span class="modal-tag">3D Mockups</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal6" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('modal6')">&times;</div>
+            <img src="https://images.unsplash.com/photo-1493421419110-74f4e85ba126?w=1000&h=400&fit=crop" alt="Digital Art" class="modal-image">
+            <div class="modal-info">
+                <h3>Digital Illustration</h3>
+                <div class="modal-category">Illustration • Digital Art</div>
+                <p>Custom illustration series for a publishing house, featuring contemporary art style with digital techniques. The illustrations blend traditional artistic elements with modern design sensibilities, creating engaging visual narratives for editorial content.</p>
+                <div class="modal-tags">
+                    <span class="modal-tag">Digital Painting</span>
+                    <span class="modal-tag">Procreate</span>
+                    <span class="modal-tag">Editorial Design</span>
+                    <span class="modal-tag">Visual Storytelling</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 500);
+            }, 3000);
+        });
+
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const cursorFollower = document.createElement('div');
+        cursorFollower.classList.add('cursor-follower');
+        document.body.appendChild(cursorFollower);
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+
+        // Cursor hover effects
+        const hoverElements = document.querySelectorAll('a, button, .portfolio-item, .service-card');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (window.pageYOffset / scrollTotal) * 100;
+            scrollProgress.style.width = scrollPercent + '%';
+        });
+
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    navLinks.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Animate skill bars
+                    if (entry.target.classList.contains('about')) {
+                        const skillBars = entry.target.querySelectorAll('.skill-bar');
+                        skillBars.forEach((bar, index) => {
+                            setTimeout(() => {
+                                bar.classList.add('animate');
+                            }, index * 200);
+                        });
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.fade-in, .slide-left, .slide-right').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Portfolio Filter
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+
+                const filterValue = btn.getAttribute('data-filter');
+
+                portfolioItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                        item.style.display = 'block';
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'scale(1)';
+                        }, 100);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Modal functionality
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Animate modal content
+            setTimeout(() => {
+                modal.querySelector('.modal-content').style.transform = 'translateY(0) scale(1)';
+            }, 10);
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = modal.querySelector('.modal-content');
+            
+            content.style.transform = 'translateY(-100px) scale(0.8)';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                const modalId = event.target.id;
+                closeModal(modalId);
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        closeModal(modal.id);
+                    }
+                });
+            }
+        });
+
+        // Contact form handling
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            const submitButton = event.target.querySelector('.submit-button');
+            const originalText = submitButton.textContent;
+            
+            submitButton.textContent = 'Sending...';
+            submitButton.disabled = true;
+            submitButton.style.background = 'var(--gray-dark)';
+            
+            // Simulate form submission
+            setTimeout(() => {
+                submitButton.textContent = 'Message Sent!';
+                submitButton.style.background = '#4CAF50';
+                
+                setTimeout(() => {
+                    alert(`Thank you ${name}! Your message has been received. I'll get back to you within 24 hours.`);
+                    event.target.reset();
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                    submitButton.style.background = 'var(--orange)';
+                }, 1000);
+            }, 2000);
+        }
+
+        // Navbar scroll effect
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > 100) {
+                navbar.style.background = 'rgba(0, 0, 0, 0.98)';
+                navbar.style.boxShadow = '0 2px 30px rgba(255, 87, 51, 0.3)';
+            } else {
+                navbar.style.background = 'rgba(0, 0, 0, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+
+            // Hide/show navbar on scroll
+            if (scrollTop > lastScrollTop && scrollTop > 200) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
+            lastScrollTop = scrollTop;
+        });
+
+        // Parallax effect for hero background
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const heroBg = document.querySelector('.hero-bg');
+            
+            if (heroBg && scrolled < window.innerHeight) {
+                heroBg.style.transform = `translateY(${scrolled * 0.5}px) rotate(${scrolled * 0.1}deg)`;
+            }
+        });
+
+        // Service cards sequential animation
+        const serviceCards = document.querySelectorAll('.service-card');
+        const serviceObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 200);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        serviceCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = `all 0.6s ease ${index * 0.1}s`;
+            serviceObserver.observe(card);
+        });
+
+        // Portfolio items hover sound effect simulation
+        portfolioItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02) rotate(1deg)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1) rotate(0deg)';
+            });
+        });
+
+        // Random floating animation for brand elements
+        const brandElements = document.querySelectorAll('.brand-element');
+        brandElements.forEach((element, index) => {
+            const delay = index * 2;
+            const duration = 8 + Math.random() * 4;
+            element.style.animationDelay = `${delay}s`;
+            element.style.animationDuration = `${duration}s`;
+        });
+
+        // Counter animation for stats
+        function animateCounter(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target + '+';
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start) + '+';
+                }
+            }, 16);
+        }
+
+        // Animate stats when hero is visible
+        const heroObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumbers = document.querySelectorAll('.stat-number');
+                    animateCounter(statNumbers[0], 50);
+                    animateCounter(statNumbers[1], 3);
+                    animateCounter(statNumbers[2], 25);
+                    heroObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        heroObserver.observe(document.querySelector('.hero'));
+
+        // Add dynamic background patterns
+        function createFloatingShapes() {
+            const shapes = ['circle', 'square', 'triangle'];
+            const colors = ['var(--orange)', 'var(--black)', 'rgba(255, 87, 51, 0.3)'];
+            
+            setInterval(() => {
+                if (document.querySelectorAll('.floating-shape').length < 5) {
+                    const shape = document.createElement('div');
+                    shape.className = 'floating-shape';
+                    shape.style.cssText = `
+                        position: fixed;
+                        width: ${Math.random() * 20 + 10}px;
+                        height: ${Math.random() * 20 + 10}px;
+                        background: ${colors[Math.floor(Math.random() * colors.length)]};
+                        border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+                        left: ${Math.random() * 100}vw;
+                        top: 100vh;
+                        pointer-events: none;
+                        z-index: 1;
+                        opacity: 0.6;
+                        animation: floatUp ${Math.random() * 10 + 15}s linear forwards;
+                    `;
+                    
+                    document.body.appendChild(shape);
+                    
+                    setTimeout(() => {
+                        if (shape.parentNode) {
+                            shape.parentNode.removeChild(shape);
+                        }
+                    }, 25000);
+                }
+            }, 3000);
+        }
+
+        // Add CSS for floating shapes
+        const floatingCSS = document.createElement('style');
+        floatingCSS.textContent = `
+            @keyframes floatUp {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 0.6;
+                }
+                100% {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(floatingCSS);
+
+        // Initialize floating shapes
+        createFloatingShapes();
+
+        // Performance optimization: Throttle scroll events
+        let ticking = false;
+        function updateOnScroll() {
+            // Scroll-based animations here
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateOnScroll);
+                ticking = true;
+            }
+        });
+
+        console.log('🎨 SIDDHAY Portfolio - Loaded and Ready!');
+        console.log('✨ Features: Custom Cursor, Smooth Animations, Interactive Portfolio');
+        console.log('🚀 Performance: Optimized for 60fps animations');
+    </script>
+</body>
+</html>
+        
